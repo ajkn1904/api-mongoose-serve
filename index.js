@@ -69,11 +69,44 @@ async function run() {
         })
 
 
+        app.get('/students/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const result = await studentsCollection.find(filter).toArray();
+            res.send(result)
+        })
+
+
         app.post('/addStudent', async (req, res) => {
             const student = req.body
             const result = await studentsCollection.insertOne(student)
             res.send(result)
         })
+
+
+
+
+
+        app.put('/students/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.body;
+            const query = { _id: new ObjectId(id) }
+            const option = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    age: status.age,
+                    sec: status.sec,
+                    roll: status.roll,
+                    grade: status.grade
+                }
+            }
+            const result = await studentsCollection.updateOne(query, updatedDoc, option)
+            res.send(result)
+        })
+
+
+
+
 
 
          }
